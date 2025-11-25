@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. Ritu Raj | Digital Portfolio</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Styles -->
+    <style>
+        /* --- THEME SETUP --- */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff512f, #dd2476);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-blur: 12px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #09090b;
+            color: #e4e4e7;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 81, 47, 0.08), transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(221, 36, 118, 0.08), transparent 40%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        /* --- UTILITIES --- */
+        .text-gradient {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px -5px rgba(221, 36, 118, 0.4);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px -5px rgba(221, 36, 118, 0.6);
+            filter: brightness(1.1);
+        }
+
+        /* --- GLASS CARDS --- */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-hover:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 81, 47, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px -10px rgba(221, 36, 118, 0.2);
+        }
+
+        /* --- ANIMATIONS --- */
+        .animate-in { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #09090b; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #dd2476; }
+
+        /* --- INPUTS --- */
+        .input-modern {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: white;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .input-modern:focus {
+            border-color: #ff512f;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 0 2px rgba(255, 81, 47, 0.2);
+        }
+
+        /* --- MODALS --- */
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            transition: opacity 0.3s;
+            opacity: 0; pointer-events: none;
+        }
+        .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-panel {
+            transform: scale(0.95) translateY(10px);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-backdrop.active .modal-panel { transform: scale(1) translateY(0); }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- NAVIGATION -->
+    <nav class="fixed w-full z-50 top-0 border-b border-white/5 bg-[#09090b]/80 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex flex-col cursor-pointer group" onclick="window.scrollTo(0,0)">
+                <div class="flex items-center gap-2">
+                    <h1 class="text-2xl font-black tracking-tighter text-white group-hover:text-gradient transition-all duration-300">MR._RITU RAJ</h1>
+                    <span id="admin-badge" class="hidden bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] px-2 py-0.5 font-bold rounded-full tracking-wider">ADMIN</span>
+                </div>
+                <span class="text-[10px] text-zinc-500 font-bold tracking-[0.3em] uppercase">Personal Portfolio</span>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8">
+                <div class="flex items-center gap-6 text-sm font-medium text-zinc-400">
+                    <a href="#home" class="hover:text-white transition-colors">Home</a>
+                    <a href="#links" class="hover:text-white transition-colors">Links</a>
+                    <a href="#contact" class="hover:text-white transition-colors">Contact</a>
+                </div>
+
+                <div class="h-6 w-px bg-white/10 mx-2"></div>
+
+                <!-- Admin Controls (Hidden by default) -->
+                <div id="admin-desk-controls" class="hidden flex items-center gap-3">
+                    <button onclick="openModal('upload-modal')" class="flex items-center gap-2 text-xs font-bold text-orange-400 hover:text-orange-300 transition bg-orange-500/10 px-3 py-1.5 rounded-full border border-orange-500/20">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i> NEW POST
+                    </button>
+                    <button onclick="openAdminPanel()" class="p-2 text-zinc-400 hover:text-white transition" title="Manage Admins">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- Auth -->
+                <div id="desk-auth-ui">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-white p-2" onclick="toggleMobileMenu()">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div id="mobile-menu" class="fixed inset-0 z-40 bg-black/95 backdrop-blur-2xl hidden flex-col pt-24 px-8 gap-8 transition-all duration-300">
+        <a href="#home" onclick="toggleMobileMenu()" class="text-3xl font-thin text-white">Home</a>
+        <a href="#links" onclick="toggleMobileMenu()" class="text-3xl font-thin text-white">Links</a>
+        <a href="#contact" onclick="toggleMobileMenu()" class="text-3xl font-thin text-white">Contact</a>
+        
+        <div id="mob-admin-controls" class="hidden w-full border-t border-white/10 pt-6 flex flex-col gap-4">
+            <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest">Admin Zone</span>
+            <button onclick="openModal('upload-modal'); toggleMobileMenu()" class="flex items-center gap-3 text-orange-400 text-lg"><i data-lucide="plus-circle"></i> Create Post</button>
+            <button onclick="openAdminPanel(); toggleMobileMenu()" class="flex items-center gap-3 text-blue-400 text-lg"><i data-lucide="users"></i> Manage Team</button>
+        </div>
+
+        <div id="mob-auth-ui" class="mt-auto pb-12 border-t border-white/10 pt-8">
+            <!-- Injected JS -->
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="pt-28 pb-20 max-w-6xl mx-auto px-6" id="home">
+        
+        <!-- HERO SECTION -->
+        <section class="glass rounded-3xl overflow-hidden p-1 mb-20 animate-in">
+            <div class="bg-[#0c0c0e] rounded-[20px] overflow-hidden grid md:grid-cols-2 relative">
+                <!-- Image Container -->
+                <div class="h-[500px] md:h-auto relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0c0c0e] via-transparent to-transparent z-10 md:bg-gradient-to-r"></div>
+                    <!-- USER IMAGE -->
+                    <img src="1763885902304.jpg" class="w-full h-full object-cover object-center transition duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0" alt="Profile">
+                </div>
+                
+                <!-- Content Container -->
+                <div class="p-10 md:p-16 flex flex-col justify-center relative">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+                    
+                    <div class="relative z-10">
+                        <span class="inline-block py-1 px-3 rounded-full bg-zinc-800/50 border border-white/5 text-xs font-bold text-orange-400 uppercase tracking-widest mb-6">Available for work</span>
+                        <h2 class="text-5xl md:text-6xl font-black text-white mb-6 leading-[1.1]">
+                            Hello, I'm <br />
+                            <span class="text-gradient">Ritu Raj</span>.
+                        </h2>
+                        <p class="text-zinc-400 text-lg leading-relaxed mb-8 max-w-md">
+                            A creative individual passionate about technology and design. Welcome to my personal space where I share my journey, thoughts, and moments.
+                        </p>
+                        
+                        <div class="flex flex-wrap gap-3 mb-10">
+                            <span class="text-xs font-bold text-zinc-500">#jaibheem</span>
+                            <span class="text-xs font-bold text-zinc-500">#namo</span>
+                            <span class="text-xs font-bold text-zinc-500">#buddha</span>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <a href="#links" class="btn-primary px-8 py-3 rounded-lg font-bold text-sm">Explore Work</a>
+                            <a href="#contact" class="px-8 py-3 rounded-lg border border-white/10 hover:bg-white/5 text-white font-bold text-sm transition">Contact Me</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LINKS / BENTO GRID -->
+        <section id="links" class="mb-24 animate-in delay-100">
+            <div class="flex items-end justify-between mb-8 px-2">
+                <div>
+                    <h2 class="text-3xl font-bold text-white">My Hub</h2>
+                    <p class="text-zinc-500 mt-1">Connect with me across the web</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <a href="https://github.com/RituRaj9580" target="_blank" class="glass glass-hover p-6 rounded-2xl flex flex-col items-center text-center group">
+                    <div class="w-14 h-14 rounded-full bg-zinc-800 flex items-center justify-center mb-4 group-hover:scale-110 transition text-white"><i data-lucide="github"></i></div>
+                    <h3 class="font-bold text-white">GitHub</h3>
+                    <p class="text-xs text-zinc-500 mt-1">View Repositories</p>
+                </a>
+                
+                <a href="https://instagram.com/the_ritu.dev" target="_blank" class="glass glass-hover p-6 rounded-2xl flex flex-col items-center text-center group">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-600 flex items-center justify-center mb-4 group-hover:scale-110 transition text-white"><i data-lucide="instagram"></i></div>
+                    <h3 class="font-bold text-white">Instagram</h3>
+                    <p class="text-xs text-zinc-500 mt-1">@the_ritu.dev</p>
+                </a>
+
+                <a href="https://img-to-text.tiiny.site/" target="_blank" class="glass glass-hover p-6 rounded-2xl flex flex-col items-center text-center group">
+                    <div class="w-14 h-14 rounded-full bg-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition text-white"><i data-lucide="scan-line"></i></div>
+                    <h3 class="font-bold text-white">AI Tool</h3>
+                    <p class="text-xs text-zinc-500 mt-1">Image to Text</p>
+                </a>
+
+                <a href="https://itsrituraj1005822114.blogspot.com" target="_blank" class="glass glass-hover p-6 rounded-2xl flex flex-col items-center text-center group">
+                    <div class="w-14 h-14 rounded-full bg-orange-500 flex items-center justify-center mb-4 group-hover:scale-110 transition text-white"><i data-lucide="pen-tool"></i></div>
+                    <h3 class="font-bold text-white">Blog</h3>
+                    <p class="text-xs text-zinc-500 mt-1">Read Articles</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- POSTS FEED -->
+        <section class="mb-24 animate-in delay-200">
+            <div class="flex items-center justify-between mb-8 px-2 border-b border-white/5 pb-4">
+                <h2 class="text-2xl font-bold text-white">Latest Updates</h2>
+                <button class="text-xs font-bold text-zinc-500 hover:text-white uppercase tracking-widest transition">View Archive</button>
+            </div>
+
+            <div id="posts-container" class="grid md:grid-cols-2 gap-8">
+                <!-- JS Injects Posts Here -->
+            </div>
+
+            <div class="mt-12 text-center">
+                <button class="px-8 py-3 border border-zinc-800 rounded-full text-sm font-bold text-zinc-400 hover:bg-zinc-800 hover:text-white transition">Load More Stories</button>
+            </div>
+        </section>
+
+        <!-- CONTACT FORM -->
+        <section id="contact" class="relative glass rounded-3xl p-8 md:p-16 overflow-hidden animate-in delay-300">
+            <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-b from-indigo-500/10 to-purple-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+            
+            <div class="grid md:grid-cols-2 gap-12 relative z-10">
+                <div class="space-y-8">
+                    <div>
+                        <h2 class="text-4xl font-black text-white mb-4">Get in Touch</h2>
+                        <p class="text-zinc-400">Have a project in mind or just want to say hi? I'm all ears.</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 text-zinc-300">
+                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-orange-500"><i data-lucide="mail" class="w-5 h-5"></i></div>
+                            <span class="font-medium">rritu8786@gmail.com</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-zinc-300">
+                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-pink-500"><i data-lucide="phone" class="w-5 h-5"></i></div>
+                            <span class="font-medium">+91 95806 24327</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-zinc-300">
+                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-purple-500"><i data-lucide="map-pin" class="w-5 h-5"></i></div>
+                            <span class="font-medium">Garhwa, Jharkhand</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form onsubmit="event.preventDefault(); alert('Message Sent!')" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" placeholder="Name" class="input-modern">
+                        <input type="email" placeholder="Email" class="input-modern">
+                    </div>
+                    <textarea rows="4" placeholder="Write your message..." class="input-modern"></textarea>
+                    <button class="btn-primary w-full py-3 rounded-lg font-bold">Send Message</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="mt-20 border-t border-white/5 pt-10 text-center">
+            <div class="flex justify-center gap-6 mb-6">
+                <a href="#" class="text-zinc-500 hover:text-white transition"><i data-lucide="instagram"></i></a>
+                <a href="#" class="text-zinc-500 hover:text-white transition"><i data-lucide="github"></i></a>
+                <a href="#" class="text-zinc-500 hover:text-white transition"><i data-lucide="twitter"></i></a>
+            </div>
+            <p class="text-zinc-600 text-sm">© 2024 Mr. Ritu Raj. Crafted with passion.</p>
+        </footer>
+    </main>
+
+    <!-- FLOATING WHATSAPP -->
+    <a href="https://wa.me/919580624327" target="_blank" class="fixed bottom-8 right-8 bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-full shadow-lg hover:scale-110 transition z-40 flex items-center justify-center">
+        <i data-lucide="message-circle" class="w-6 h-6"></i>
+    </a>
+
+    <!-- ========== MODALS ========== -->
+
+    <!-- AUTH MODAL -->
+    <div id="auth-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modal-panel bg-[#121212] border border-white/10 w-full max-w-md rounded-2xl p-8 relative shadow-2xl">
+            <button onclick="closeModal('auth-modal')" class="absolute top-4 right-4 text-zinc-500 hover:text-white"><i data-lucide="x"></i></button>
+            
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-tr from-orange-500 to-pink-500 rounded-xl mx-auto mb-6 flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
+                    <i data-lucide="fingerprint" class="w-8 h-8"></i>
+                </div>
+                <h2 id="auth-title" class="text-2xl font-bold text-white">Welcome</h2>
+                <p id="auth-subtitle" class="text-zinc-500 text-sm">Sign in to continue</p>
+            </div>
+
+            <form onsubmit="handleAuth(event)" class="space-y-4">
+                <div id="auth-name-field" class="hidden">
+                    <input type="text" id="auth-name" placeholder="Full Name" class="input-modern">
+                </div>
+                <input type="email" id="auth-email" placeholder="Email Address" class="input-modern" required>
+                <input type="password" id="auth-pass" placeholder="Password" class="input-modern" required>
+                
+                <p id="auth-error" class="text-red-400 text-xs text-center hidden bg-red-500/10 p-2 rounded">Invalid Credentials</p>
+                
+                <button type="submit" id="auth-submit-btn" class="btn-primary w-full py-3 rounded-lg font-bold">Log In</button>
+            </form>
+
+            <div class="mt-6 text-center text-sm text-zinc-500">
+                <span id="auth-switch-text">New here?</span>
+                <button onclick="toggleAuthMode()" id="auth-switch-btn" class="text-orange-500 font-bold hover:underline ml-1">Sign Up</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPLOAD MODAL (UPDATED FOR FILE SELECT) -->
+    <div id="upload-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modal-panel bg-[#121212] border border-white/10 w-full max-w-lg rounded-2xl p-8 relative shadow-2xl">
+            <button onclick="closeModal('upload-modal')" class="absolute top-4 right-4 text-zinc-500 hover:text-white"><i data-lucide="x"></i></button>
+            <h2 class="text-2xl font-bold text-white mb-1">New Entry</h2>
+            <p class="text-zinc-500 text-sm mb-6">Share a memory or project.</p>
+
+            <!-- Hidden File Input -->
+            <input type="file" id="file-input" class="hidden" onchange="handleFileSelect(this)">
+
+            <!-- Type Selector -->
+            <div class="grid grid-cols-3 gap-3 mb-6">
+                <button onclick="setUploadType('photo')" class="p-4 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-orange-500 hover:bg-zinc-800 transition flex flex-col items-center gap-2 text-zinc-400 hover:text-white group">
+                    <i data-lucide="image" class="group-hover:scale-110 transition"></i> <span class="text-xs font-bold">Photo</span>
+                </button>
+                <button onclick="setUploadType('video')" class="p-4 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-pink-500 hover:bg-zinc-800 transition flex flex-col items-center gap-2 text-zinc-400 hover:text-white group">
+                    <i data-lucide="video" class="group-hover:scale-110 transition"></i> <span class="text-xs font-bold">Video</span>
+                </button>
+                <button onclick="setUploadType('music')" class="p-4 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-purple-500 hover:bg-zinc-800 transition flex flex-col items-center gap-2 text-zinc-400 hover:text-white group">
+                    <i data-lucide="music" class="group-hover:scale-110 transition"></i> <span class="text-xs font-bold">Music</span>
+                </button>
+            </div>
+
+            <div id="upload-form" class="hidden space-y-4 animate-in">
+                <div class="text-xs font-bold text-orange-500 uppercase">Selected: <span id="upload-type-label" class="text-white"></span></div>
+                
+                <!-- File Select Area -->
+                <div onclick="document.getElementById('file-input').click()" class="border-2 border-dashed border-zinc-700 hover:border-orange-500 rounded-xl h-32 flex flex-col items-center justify-center cursor-pointer transition bg-black/20 group">
+                    <div id="file-preview-container" class="hidden w-full h-full rounded-xl overflow-hidden bg-cover bg-center"></div>
+                    <div id="file-placeholder" class="flex flex-col items-center">
+                        <i data-lucide="upload-cloud" class="text-zinc-500 group-hover:text-orange-500 mb-2 transition"></i>
+                        <span id="file-label" class="text-xs text-zinc-400 group-hover:text-white font-medium">Tap to select file</span>
+                    </div>
+                </div>
+
+                <input type="text" id="post-title" placeholder="Title" class="input-modern">
+                <textarea id="post-desc" rows="3" placeholder="Description..." class="input-modern"></textarea>
+                <button onclick="submitPost()" class="btn-primary w-full py-3 rounded-lg font-bold">Publish</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MANAGE ADMINS MODAL -->
+    <div id="admin-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modal-panel bg-[#121212] border border-white/10 w-full max-w-md rounded-2xl p-8 relative shadow-2xl">
+            <button onclick="closeModal('admin-modal')" class="absolute top-4 right-4 text-zinc-500 hover:text-white"><i data-lucide="x"></i></button>
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <i data-lucide="shield-alert" class="text-blue-500"></i> Team Management
+            </h2>
+
+            <div class="mb-6 border-b border-white/10 pb-6">
+                <h4 class="text-xs font-bold text-zinc-500 uppercase mb-3">Add New Admin</h4>
+                <form onsubmit="addNewAdmin(event)" class="space-y-3">
+                    <input type="text" id="new-admin-name" placeholder="Name" class="input-modern" required>
+                    <input type="email" id="new-admin-email" placeholder="Email" class="input-modern" required>
+                    <input type="password" id="new-admin-pass" placeholder="Password" class="input-modern" required>
+                    <button class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition">Add Admin</button>
+                </form>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold text-zinc-500 uppercase mb-3">Existing Admins</h4>
+                <div id="admin-list" class="space-y-2 max-h-40 overflow-y-auto pr-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIC -->
+    <script>
+        // --- STATE ---
+        const DEFAULT_ADMIN = { id: 1, name: 'Admin Ritu', email: 'rritu8786@gmail.com', pass: 'Ritu@100504', role: 'admin' };
+        let admins = JSON.parse(localStorage.getItem('site_admins')) || [DEFAULT_ADMIN];
+        
+        let currentUser = null;
+        let authMode = 'login';
+        let uploadType = null;
+        let currentFile = null; // Stores the uploaded file data URL
+
+        // Mock Data
+        let posts = [
+            { id: 1, title: "Adventures in Typography", date: "Jan 16, 2024", excerpt: "Exploring how font choices influence design aesthetics.", img: "https://images.unsplash.com/photo-1589519160732-57fc498494f8?w=800", type: 'photo' },
+            { id: 2, title: "The Silent Companion", date: "Jan 06, 2024", excerpt: "Why pets are more than just animals; they are family.", img: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800", type: 'photo' },
+            { id: 3, title: "75th Anniversary", date: "Jan 05, 2024", excerpt: "Celebrating freedom and heritage with pride.", img: "https://images.unsplash.com/photo-1532375810709-75b1da00537c?w=800", type: 'photo' },
+            { id: 4, title: "Mahatma Gandhi", date: "Jan 05, 2024", excerpt: "Reflecting on the teachings of the father of the nation.", img: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Mahatma-Gandhi-studio-1931.jpg", type: 'photo' },
+        ];
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPosts();
+            updateAuthUI();
+            lucide.createIcons();
+            
+            if(admins.length === 0) { 
+                admins.push(DEFAULT_ADMIN); 
+                saveAdmins(); 
+            }
+        });
+
+        // --- FUNCTIONS ---
+        function saveAdmins() { localStorage.setItem('site_admins', JSON.stringify(admins)); }
+
+        function renderPosts() {
+            const container = document.getElementById('posts-container');
+            container.innerHTML = '';
+            
+            posts.forEach(post => {
+                const isAdmin = currentUser?.role === 'admin';
+                
+                let media = `<img src="${post.img}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">`;
+                if(post.type === 'video') media = `<div class="w-full h-full bg-black flex items-center justify-center"><i data-lucide="video" class="text-white w-12 h-12 opacity-80"></i></div>`;
+                if(post.type === 'music') media = `<div class="w-full h-full bg-zinc-900 flex flex-col items-center justify-center"><i data-lucide="music" class="text-pink-500 w-12 h-12 mb-2"></i><span class="text-xs text-zinc-500">Audio</span></div>`;
+
+                const html = `
+                    <article class="glass glass-hover rounded-xl overflow-hidden relative group">
+                        ${isAdmin ? `<button onclick="deletePost(${post.id})" class="absolute top-3 right-3 z-20 bg-red-500/80 hover:bg-red-600 text-white p-2 rounded-full backdrop-blur-md shadow-lg transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
+                        
+                        <div class="h-60 overflow-hidden relative">
+                            ${media}
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-60"></div>
+                            <div class="absolute bottom-4 left-4">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-[10px] font-bold text-orange-400 uppercase tracking-wider">${post.date}</span>
+                                    ${post.type !== 'photo' ? `<span class="px-1.5 py-0.5 rounded bg-white/10 border border-white/10 text-[9px] text-white uppercase">${post.type}</span>` : ''}
+                                </div>
+                                <h3 class="text-xl font-bold text-white group-hover:text-orange-400 transition">${post.title}</h3>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-zinc-400 text-sm leading-relaxed mb-6 line-clamp-2">${post.excerpt}</p>
+                            <div class="flex items-center justify-between pt-4 border-t border-white/5">
+                                <div class="flex gap-3 text-zinc-500">
+                                    <i data-lucide="heart" class="w-4 h-4 hover:text-red-500 cursor-pointer transition"></i>
+                                    <i data-lucide="share-2" class="w-4 h-4 hover:text-white cursor-pointer transition"></i>
+                                </div>
+                                <button class="text-xs font-bold text-white flex items-center gap-1 group/btn hover:text-orange-400 transition">READ MORE <i data-lucide="arrow-right" class="w-3 h-3 group-hover/btn:translate-x-1 transition"></i></button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+            lucide.createIcons();
+        }
+
+        function updateAuthUI() {
+            const deskAuth = document.getElementById('desk-auth-ui');
+            const mobAuth = document.getElementById('mob-auth-ui');
+            const adminBadge = document.getElementById('admin-badge');
+            const deskControls = document.getElementById('admin-desk-controls');
+            const mobControls = document.getElementById('mob-admin-controls');
+
+            if (currentUser) {
+                // LOGGED IN
+                const isAdmin = currentUser.role === 'admin';
+                
+                // Show/Hide Admin UI
+                if(isAdmin) {
+                    adminBadge.classList.remove('hidden');
+                    deskControls.classList.remove('hidden');
+                    mobControls.classList.remove('hidden');
+                    mobControls.classList.add('flex');
+                } else {
+                    adminBadge.classList.add('hidden');
+                    deskControls.classList.add('hidden');
+                    mobControls.classList.add('hidden');
+                    mobControls.classList.remove('flex');
+                }
+
+                const userHtml = `
+                    <div class="flex items-center gap-3 border-l border-white/10 pl-4">
+                        <div class="text-right hidden lg:block">
+                            <span class="block text-[10px] font-bold text-zinc-500 uppercase">Signed in</span>
+                            <span class="text-xs font-bold text-white">${currentUser.name}</span>
+                        </div>
+                        <button onclick="logout()" class="w-9 h-9 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition" title="Log Out">
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                deskAuth.innerHTML = userHtml;
+                mobAuth.innerHTML = `<button onclick="logout()" class="w-full py-4 text-red-500 font-bold flex items-center justify-center gap-2 hover:bg-red-500/10 transition rounded-xl"><i data-lucide="log-out"></i> Log Out (${currentUser.name})</button>`;
+
+            } else {
+                // GUEST
+                adminBadge.classList.add('hidden');
+                deskControls.classList.add('hidden');
+                mobControls.classList.add('hidden');
+                mobControls.classList.remove('flex');
+
+                const guestDesk = `
+                    <button onclick="openModal('auth-modal', 'login')" class="px-5 py-2 bg-white text-black rounded-lg font-bold text-xs hover:bg-orange-500 hover:text-white transition shadow-lg shadow-white/10">LOG IN</button>
+                `;
+                deskAuth.innerHTML = guestDesk;
+                mobAuth.innerHTML = `
+                    <button onclick="openModal('auth-modal', 'login')" class="w-full py-4 bg-white text-black font-bold rounded-xl mb-3">Log In</button>
+                    <button onclick="openModal('auth-modal', 'signup')" class="w-full py-4 border border-white/10 text-zinc-400 font-bold rounded-xl">Create Account</button>
+                `;
+            }
+            lucide.createIcons();
+        }
+
+        // --- AUTH LOGIC ---
+        function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-pass').value;
+            const name = document.getElementById('auth-name').value;
+            const error = document.getElementById('auth-error');
+
+            if(authMode === 'login') {
+                const adminUser = admins.find(a => a.email === email && a.pass === pass);
+                if(adminUser) {
+                    currentUser = { ...adminUser };
+                    closeModal('auth-modal');
+                } else if (email && pass) {
+                    currentUser = { name: email.split('@')[0], email, role: 'user' };
+                    closeModal('auth-modal');
+                } else {
+                    error.classList.remove('hidden');
+                    return;
+                }
+            } else {
+                if(email && pass && name) {
+                    currentUser = { name, email, role: 'user' };
+                    closeModal('auth-modal');
+                } else {
+                    error.textContent = "Please fill all fields";
+                    error.classList.remove('hidden');
+                    return;
+                }
+            }
+            updateAuthUI();
+            renderPosts();
+        }
+
+        function logout() {
+            currentUser = null;
+            updateAuthUI();
+            renderPosts();
+        }
+
+        function toggleAuthMode() {
+            authMode = authMode === 'login' ? 'signup' : 'login';
+            document.getElementById('auth-title').innerText = authMode === 'login' ? 'Welcome Back' : 'Create Account';
+            document.getElementById('auth-subtitle').innerText = authMode === 'login' ? 'Sign in to continue' : 'Join our community';
+            document.getElementById('auth-name-field').classList.toggle('hidden', authMode === 'login');
+            document.getElementById('auth-submit-btn').innerText = authMode === 'login' ? 'Log In' : 'Sign Up';
+            document.getElementById('auth-switch-text').innerText = authMode === 'login' ? 'New here?' : 'Have an account?';
+            document.getElementById('auth-switch-btn').innerText = authMode === 'login' ? 'Sign Up' : 'Log In';
+            document.getElementById('auth-error').classList.add('hidden');
+        }
+
+        // --- ADMIN LOGIC ---
+        function openAdminPanel() {
+            const list = document.getElementById('admin-list');
+            list.innerHTML = '';
+            admins.forEach(a => {
+                const isMe = a.id === currentUser.id;
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-3 bg-zinc-900 rounded-lg mb-2';
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-xs text-white">${a.name.charAt(0)}</div>
+                        <div><div class="text-sm font-bold text-white">${a.name}</div><div class="text-[10px] text-zinc-500">${a.email}</div></div>
+                    </div>
+                    ${!isMe ? `<button onclick="deleteAdmin(${a.id})" class="text-zinc-600 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
+                `;
+                list.appendChild(div);
+            });
+            lucide.createIcons();
+            openModal('admin-modal');
+        }
+
+        function addNewAdmin(e) {
+            e.preventDefault();
+            const name = document.getElementById('new-admin-name').value;
+            const email = document.getElementById('new-admin-email').value;
+            const pass = document.getElementById('new-admin-pass').value;
+
+            if(admins.find(a => a.email === email)) return alert('Admin exists');
+            
+            admins.push({ id: Date.now(), name, email, pass, role: 'admin' });
+            saveAdmins();
+            openAdminPanel(); // Refresh list
+            e.target.reset();
+        }
+
+        function deleteAdmin(id) {
+            if(confirm('Remove admin?')) {
+                admins = admins.filter(a => a.id !== id);
+                saveAdmins();
+                openAdminPanel();
+            }
+        }
+
+        // --- POST LOGIC ---
+        function setUploadType(type) {
+            uploadType = type;
+            const fileInput = document.getElementById('file-input');
+            
+            if (type === 'photo') fileInput.accept = "image/*";
+            else if (type === 'video') fileInput.accept = "video/*";
+            else if (type === 'music') fileInput.accept = "audio/*";
+
+            document.getElementById('upload-type-label').innerText = type;
+            document.getElementById('upload-form').classList.remove('hidden');
+            
+            // Reset
+            fileInput.value = '';
+            currentFile = null;
+            document.getElementById('file-label').innerText = "Tap to select file";
+            const preview = document.getElementById('file-preview-container');
+            preview.style.backgroundImage = '';
+            preview.classList.add('hidden');
+            document.getElementById('file-placeholder').classList.remove('hidden');
+        }
+
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                document.getElementById('file-label').innerText = file.name;
+                
+                // Create Preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentFile = e.target.result;
+                    if(uploadType === 'photo') {
+                        const preview = document.getElementById('file-preview-container');
+                        preview.classList.remove('hidden');
+                        preview.style.backgroundImage = `url(${currentFile})`;
+                        document.getElementById('file-placeholder').classList.add('hidden');
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function submitPost() {
+            const title = document.getElementById('post-title').value;
+            const desc = document.getElementById('post-desc').value;
+            if(!title) return;
+
+            posts.unshift({
+                id: Date.now(),
+                title,
+                excerpt: desc,
+                date: new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}),
+                img: currentFile || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=800", // Use upload or fallback
+                type: uploadType
+            });
+            
+            closeModal('upload-modal');
+            document.getElementById('upload-form').classList.add('hidden');
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-desc').value = '';
+            renderPosts();
+        }
+
+        function deletePost(id) {
+            if(confirm('Delete post?')) {
+                posts = posts.filter(p => p.id !== id);
+                renderPosts();
+            }
+        }
+
+        // --- UI HELPERS ---
+        function openModal(id, mode) {
+            if(mode) authMode = mode === 'signup' ? 'login' : 'signup'; 
+            if(mode) toggleAuthMode();
+            document.getElementById(id).classList.add('active');
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('flex');
+        }
+    </script>
+</body>
+</html>
